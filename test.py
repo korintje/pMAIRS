@@ -22,8 +22,8 @@ dataset = mairs.MultiBeamsSet()
 dataset.load_background(bkg)
 dataset.load_sample(sample)
 
-result_df = dataset.get_op_ip()
+result_df = dataset.get_op_ip(ppolar=True)
 result_df.to_csv('out.csv')
 
-thetas_df = dataset.get_thetas()
+thetas_df = dataset.get_thetas(n4H=1.4)
 thetas_df.dropna().to_csv('theta.csv')

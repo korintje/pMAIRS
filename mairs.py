@@ -18,20 +18,20 @@ class MultiBeamsSet():
     def load_background(self, beams):
         self.multibeams_bkg = beams
 
-    def get_op_ip(self):
+    def get_op_ip(self, ppolar=True):
         MAIRS = pd.DataFrame(columns=["wavenumber", "IP", "OP"])
-        mairs_bkg = self.multibeams_bkg.get_op_ip()
-        mairs_smp = self.multibeams_smp.get_op_ip()
+        mairs_bkg = self.multibeams_bkg.get_op_ip(ppolar=ppolar)
+        mairs_smp = self.multibeams_smp.get_op_ip(ppolar=ppolar)
         MAIRS["IP"] = -np.log(mairs_smp["IP"] / mairs_bkg["IP"])
         MAIRS["OP"] = -np.log(mairs_smp["OP"] / mairs_bkg["OP"])
         MAIRS["wavenumber"] = mairs_smp["wavenumber"][:]
         return MAIRS
     
-    def get_thetas(self):
+    def get_thetas(self, n4H=1):
         mairs = self.get_op_ip()
         thetas = pd.DataFrame({
             "wavenumber": mairs["wavenumber"],
-            "theta": np.rad2deg(np.arctan(np.sqrt(2 * mairs["IP"] / mairs["OP"])))
+            "theta": np.rad2deg(np.arctan(np.sqrt(2 * mairs["IP"] / mairs["OP"] / n4H)))
         }) 
         return thetas
 
@@ -46,7 +46,8 @@ class MultiBeams():
         transmittances = spectrum[1]
         self.beams.append(SingleBeam(angle, wavenumbers, transmittances))
 
-    def get_op_ip(self):
+    def get_op_ip(self, ppolar=True):
+        """ By default, p-polarization is set True (pMAIRS) """
         MAIRS = pd.DataFrame(columns=["wavenumber", "IP", "OP"])
         beam_num = len(self.beams)
         if beam_num < 3:
@@ -59,10 +60,11 @@ class MultiBeams():
 
         # R行列（J. Phys. Chem. B 2002, 106, 4112.）
         _R = []
+        f = 0 if ppolar is True else 1
         const = (4.0 / np.pi)**2.0
         for beam in self.beams:
             angle = np.deg2rad(beam.angle)
-            vec = np.array([1 + np.cos(angle)**2 + (np.sin(angle)**2 * np.tan(angle)**2), np.tan(angle)**2])
+            vec = np.array([f + np.cos(angle)**2 + (np.sin(angle)**2 * np.tan(angle)**2), np.tan(angle)**2])
             _R.append(vec)
         R = const * np.array(_R)
         
