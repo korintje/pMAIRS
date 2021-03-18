@@ -51,12 +51,9 @@ class MultiBeams():
         MAIRS = pd.DataFrame(columns=["wavenumber", "IP", "OP"])
         beam_num = len(self.beams)
         if beam_num < 3:
-            try:
-                raise ValueError(
-                    "Error! At least 3 single-beams are required to calc OP/IP"
+            raise Exception(
+                    "Error. At least 3 single-beams are required to calc OP/IP."
                     )
-            except ValueError as e:
-                print(e)
 
         # R行列（J. Phys. Chem. B 2002, 106, 4112.）
         _R = []
