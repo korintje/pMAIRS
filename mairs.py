@@ -53,7 +53,7 @@ class MultiBeams():
         if beam_num < 3:
             try:
                 raise ValueError(
-                    "Error! at least 3-set of single angle data are required to calc OP/IP"
+                    "Error! At least 3 single-beams are required to calc OP/IP"
                     )
             except ValueError as e:
                 print(e)
