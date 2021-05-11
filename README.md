@@ -3,7 +3,7 @@ Scripts to process pMAIRS (p-Polarized infrared multiple angle incidence resolut
 
 # Functions
 This script can calculate OP(out-of-plane), IP (in-plane), and tilt angle spectra from a set of infrared spectra.
-The spectra data are loaded as pandas DataFrame.
+The spectra data are loaded as numpy.ndarray.
 
 # Examples
 ```python
